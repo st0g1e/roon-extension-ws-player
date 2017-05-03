@@ -1,0 +1,15 @@
+{
+  "name": "roon-extension-ws-player",
+  "description": "roon player using websocket",
+  "version": "0.0.1",
+  "main": "apps.js",
+  "private": true,
+  "dependencies": {
+    "express": "4.x",
+    "node-roon-api": "github:roonlabs/node-roon-api",
+    "node-roon-api-image": "github:roonlabs/node-roon-api-image",
+    "node-roon-api-status": "github:roonlabs/node-roon-api-status",
+    "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
+    "socket.io": "^1.7.3"
+  }
+}

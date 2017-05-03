@@ -1,0 +1,31 @@
+<script src="/socket.io/socket.io.js"></script>
+<script src="/player.js"></script>
+<h1>roon webplayer</h1>
+<hr>
+Zones: <select id="zoneList" onchange="updateSelected()">
+</select> 
+
+<p></p>
+<table><tr>
+<td>Artist:</td><td><div id="artist"></div></td>
+</tr><tr>
+<td>Album:</td><td><div id="album"></div></td>
+</tr><tr>
+<td>Track:</td><td><div id="track"></div></td>
+</tr></table>
+
+<p></p>
+<center>
+
+<table><tr>
+<td colspan=3><center><div id="icon"></div></center></td>
+</tr><tr>
+<td colspan=3><center><div id="rangeSlider"></div></center></td>
+</tr><tr>
+<form>
+<td><div id="prev"></div></td>
+<td><div id="playPause"></div></td>
+<td><div id="next"></div></td>
+</form>
+</tr></table>
+</center>
