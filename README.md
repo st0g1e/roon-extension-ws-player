@@ -1,14 +1,10 @@
-# HTTP Calls for Roon APIs
+# Websocket Roon Player
 ---------------------------
-
-These APIs are run by http calls.
-There is a list below with examples that calls these APIs.
-
-Have tried it with iOs swift and iOS' Workflow app to create widgets.
+This is a websocket implementation of roon player
 
 ## Prerequisite
 
-These apis are running on Node.js. Below are the steps to install it.
+This is running on Node.js and socket.io. Below are the steps to install it.
 
 * On Windows, install from the above link.
 * On Mac OS, you can use [homebrew](http://brew.sh) to install Node.js.
@@ -26,10 +22,10 @@ $ node -v
 v5.10.1
 ```
 
-## Installing roon-extension-http-api
+## Installing roon-extension-ws-player
 
 1. Download the repository.
-* Go to [http-extension-http-api](https://github.com/st0g1e/roon-extension-http-api) page
+* Go to [http-extension-ws-player](https://github.com/st0g1e/roon-extension-ws-player) page
 * Click on "Clone or Download"
 * Click "Download Zip"
 
@@ -41,6 +37,14 @@ v5.10.1
   cd [PATH]
   ```
 * Install Dependencies
+  
+  If you have not installed socket.io, install it using the following command
+  ```
+  npm install socket.io
+  ```
+  
+  then install the repository
+  
   ```
   npm install
   ```
@@ -58,125 +62,59 @@ v5.10.1
 4. Enable the extension
    In Roon, go to Settings -> Extensions and click on the "enable" button next to the roon-extension-http-api extension details.
    
-** Testing in Browser
-
-You should now the IP address where the extension is (for the same computer, you can use localhost. the default port is 3001.
-This can be changed by changing the PORT value in server.js
+## Running in Browser
 
 Open a browser and go to the following link:
 ```
-http://localhost:3001/roonAPI/listZones
+http://localhost:3002/
 ```
 
-## Available APIs
-The full list of APIs can be seen on routes.js
+Port can be changed by changing the PORT variable in apps.js.
+IP should be changed to where the repository is located
 
-The format to call these APIs are:
+## Websocket calls
+TO create your own client, the following are the available WS calls
+
+The server (apps.js) emits zone whenever there is a change
 ```
-http://[IPAddress]:[Port]/roonAPI/[APIName]
+io.emit("zones", zones);
 ```
 
-The APIs are:
-* Transport APIs
-  - getCore
-  ```
-     http://localhost:3001/roonAPI/getCore
-  ```
-  - listZone
-  ```
-     http://localhost:3001/roonAPI/listZones
-  ```
-  - getZone
-  ```
-     http://localhost:3001/roonAPI/getZone?zoneId=[zoneId as found from listZones]
-  ```
-  - play_pause
-  ```
-     http://localhost:3001/roonAPI/play_pause?zoneId=[zoneId as found from listZones]
-  ```
-  - play
-  ```
-     http://localhost:3001/roonAPI/play?zoneId=[zoneId as found from listZones]
-  ```
-  - pause
-  ```
-     http://localhost:3001/roonAPI/pause?zoneId=[zoneId as found from listZones]
-  ```
-  - stop
-  ```
-     http://localhost:3001/roonAPI/stop?zoneId=[zoneId as found from listZones]
-  ```
-  - previous
-  ```
-     http://localhost:3001/roonAPI/previous?zoneId=[zoneId as found from listZones]
-  ```
-  - next
-  ```
-     http://localhost:3001/roonAPI/next?zoneId=[zoneId as found from listZones]
-  ```
-  - change_volume
-  ```
-     http://localhost:3001/roonAPI/change_volume?volume=[Volume % from 0 to 100]&outputId=[outputId as found from listZones]
-  ```
-  
-* Image APIs
-  - getImage
-  ```
-     http://localhost:3001/roonAPI/getImage?image_key=[image_key as found from the browser APIs]
-  ```
-  - getMediumImage
-  ```
-     http://localhost:3001/roonAPI/getMediumImage?image_key=[image_key as found from the browser APIs]
-  ```
-  - getIcon
-  ```
-     http://localhost:3001/roonAPI/getIcon?image_key=[image_key as found from the browser APIs]
-  ```
-  
-* Browser APIs  
-  - listByItemKey (list_size always returns 100)
-  ```
-     http://localhost:3001/roonAPI/listByItemKey?zoneId=[zoneId]&item_key=[item_key from Browser APIs]&page=[page number]&list_size=[number of return per page]
-  ```
-  - listSearch (list_size always returns 100)
-  ```
-     http://localhost:3001/roonAPI/listSearch?zoneId=[zoneId]&toSearch=[search string]&list_size=[hits per page]
-  ```
-  - goUp (list_size always returns 100)
-  ```
-     http://localhost:3001/roonAPI/goUp?zoneId=[zoneId]&list_size=[hits per page]
-  ```
-  - goHome (list_size always returns 100)
-  ```
-     http://localhost:3001/roonAPI/goHome?zoneId=[zoneId]&list_size=[hits per page]
-  ```
-  - listGoPage (list_size always returns 100)
-  ```
-     http://localhost:3001/roonAPI/listGoPage?page=[page number]&list_size=[hits per page]
-  ```
- 
+For the image, the client sends the image_key to the server
+```
+socket.emit('getImage', image_key);
+```
 
-* Timers
-  - getTimers
-  ```
-     http://localhost:3001/roonAPI/getTimers
-  ```
-  - addTimer
-  ```
-     http://localhost:3001/roonAPI/addTimer?zoneId=[zoneId]&time=[unix time in millisecond]&command=[play|[pause]&isRepeat=[0|1]
-  ```
-  - removeTimer
-  ```
-     http://localhost:3001/roonAPI/removeTimer?zoneId=[zoneId]&time=[unix time in milliseconds]&command=[play|pause]&isRepeat=[0|1]
-  ```
+Then the server returns the image
+```
+io.emit('image', { image: true, buffer: body.toString('base64') });
+```
 
-## Examples
-There are several examples that calls the APIs above under the htmls directory.
+The server also listen to client's operational calls:
 
-URL: http://localhost:3001/player.html
+Change Volume
+```
+  var vol = new Object();
+  vol.volume = volume;
+  vol.outputId = outputId;
 
-These are: 
-- player.html (simple player with play/pause, next, previous and volume slider where available)
-- browser.html (simple viewer list, can play the songs)
-- timers.html (simple timers to play/pause songs)
+  socket.emit('changeVolume', JSON.stringify(vol));
+
+```
+
+Back Button
+```
+  socket.emit('goPrev', zone_id);
+```
+
+Next Button
+```
+  socket.emit('goNext', zone_id);
+```
+
+Pause/Play Button
+```
+  socket.emit('goPlayPause', zone_id);
+```
+
 
