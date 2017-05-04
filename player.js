@@ -58,27 +58,13 @@ function updateZone(msg) {
 //console.log("----" + JSON.stringify(msg[curZone]) );
   var zone = msg[curZone];
 
-  if ( zone.state == "playing" || zone.state == "paused" ) {
-    if ( zone.now_playing != null &&
-         zone.now_playing.one_line.line1 == lastSong ) {
-      if ( zone.outputs[0].volume != null && zone.outputs[0].volume.value != lastVolume ) {
-        lastVolume = zone.outputs[0].volume.value;
-        show_zone(msg[curZone]);
-      }
-    } else {
-      lastSong = zone.now_playing.one_line.line1;
+  if ( zone.now_playing != null ) {
+     show_zone(msg[curZone]);
 
-      if ( zone.outputs[0].volume != null && zone.outputs[0].volume.value != lastVolume ) {
-        lastVolume = zone.outputs[0].volume.value;
-      } 
-
-      show_zone(msg[curZone]);
-    }
-
-    if ( zone.now_playing.image_key != lastPicture ) {
-      lastPicture = zone.now_playing.image_key;
-      socket.emit('getImage', lastPicture);
-    }
+     if ( lastPicture != zone.now_playing.image_key ) {
+       lastPicture = zone.now_playing.image_key;
+       socket.emit('getImage', zone.now_playing.image_key);
+     }
   } else {
     blank_page();   
   }
@@ -93,7 +79,6 @@ function blank_page() {
   document.getElementById("next").innerHTML = "";
   document.getElementById("rangeSlider").innerHTML = "";
   document.getElementById("icon").innerHTML = "";
-
 }
 
 
@@ -155,18 +140,15 @@ function rangeMouseUp() {
 }
 
 function goPrev(zone_id) {
-  lastSong = "";
-  lastPicture = "";
   socket.emit('goPrev', zone_id);
 }
 
 function goNext(zone_id) {  
-  lastSong = "";
-  lastPicture = "";
   socket.emit('goNext', zone_id);
 }
 
 function goPlayPause(zone_id) {
+console.log("status:" + zones[zone_id].state);
   socket.emit('goPlayPause', zone_id);
 }
 

@@ -113,6 +113,14 @@ io.on('connection', function(socket){
     transport.control(msg, 'playpause');
   });
 
+  socket.on('goPlay', function(msg){
+    transport.control(msg, 'play');
+  });
+
+  socket.on('goPause', function(msg){
+    transport.control(msg, 'pause');
+  });
+
   socket.on('getImage', function(msg){
      core.services.RoonApiImage.get_image(msg, {"scale": "fit", "width": 300, "height": 200, "format": "image/jpeg"}, function(cb, contentType, body) {
         socket.emit('image', { image: true, buffer: body.toString('base64') });
