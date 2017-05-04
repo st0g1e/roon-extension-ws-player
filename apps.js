@@ -52,6 +52,7 @@ var roon = new RoonApi({
 
             io.emit("zones", zones);
         });
+
    },
 
    core_unpaired: function(core_) {
@@ -113,7 +114,9 @@ io.on('connection', function(socket){
   });
 
   socket.on('getImage', function(msg){
-    get_image(msg, "fit", 300, 200, "image/jpeg");
+     core.services.RoonApiImage.get_image(msg, {"scale": "fit", "width": 300, "height": 200, "format": "image/jpeg"}, function(cb, contentType, body) {
+        socket.emit('image', { image: true, buffer: body.toString('base64') });
+     });
   });
 
 });

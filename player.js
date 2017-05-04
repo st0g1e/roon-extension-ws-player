@@ -155,10 +155,14 @@ function rangeMouseUp() {
 }
 
 function goPrev(zone_id) {
+  lastSong = "";
+  lastPicture = "";
   socket.emit('goPrev', zone_id);
 }
 
-function goNext(zone_id) {
+function goNext(zone_id) {  
+  lastSong = "";
+  lastPicture = "";
   socket.emit('goNext', zone_id);
 }
 
