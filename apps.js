@@ -13,7 +13,7 @@ var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
-const PORT = 3002; 
+const PORT = 3002;
 
 app.use(express.static(path.join(__dirname, '')));
 
@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
   next();
 });
 
- 
+
 var core;
 var zones = [];
 
@@ -83,16 +83,16 @@ server.listen(PORT, function() {
 
 // ---------------------------- WEB SOCKET --------------
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/player.html');
-});
+//app.get('/', function(req, res){
+//  res.sendFile(__dirname + '/player.html');
+//});
 
 io.on('connection', function(socket){
-//  console.log('a user connected');
+  console.log('a user connected');
   io.emit("zones", zones);
 
   socket.on('disconnect', function(){
-//    console.log('user disconnected');
+    console.log('user disconnected');
   });
 
   socket.on('changeVolume', function(msg) {
