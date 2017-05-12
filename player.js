@@ -1,7 +1,7 @@
 var topUrl = window.location.protocol + "//" + window.location.hostname + ":" + window.location.port;
 
 var socket = io();
-var zones; 
+var zones;
 var curZone;
 var lastSong = "";
 var lastPicture = "";
@@ -23,9 +23,9 @@ socket.on("image", function(info) {
     var list = document.getElementById("icon");
 
     if ( list.childNodes.length > 0 ) {
-      list.removeChild(list.childNodes[0]);  
+      list.removeChild(list.childNodes[0]);
     }
-  
+
     list.appendChild(img);
   }
 });
@@ -66,7 +66,7 @@ function updateZone(msg) {
        socket.emit('getImage', zone.now_playing.image_key);
      }
   } else {
-    blank_page();   
+    blank_page();
   }
 }
 
@@ -84,7 +84,7 @@ function blank_page() {
 
 function updateSelected() {
   curZone = document.getElementById("zoneList").options[document.getElementById("zoneList").selectedIndex].value;
-  
+
   updateZone( zones );
 }
 
@@ -113,13 +113,20 @@ function show_zone(zone) {
 
   // Navigation Buttons
 
-  document.getElementById("prev").innerHTML = "<input type=\"button\" value=\"prev\" onclick=\"goPrev(\'" + 
+  document.getElementById("prev").innerHTML = "<input type=\"button\" value=\"prev\" onclick=\"goPrev(\'" +
                                                      zone.zone_id + "\')\"/>\n";
 
-  document.getElementById("playPause").innerHTML = "<input type=\"button\" value=\"play/pause\" onclick=\"goPlayPause(\'" + 
-                                              zone.zone_id + "\')\"/>\n";
+  if ( zone.state == "playing") {
+    document.getElementById("playPause").innerHTML = "<a href=\'javascript:void(0);\' onclick=\"goPlayPause(\'" +
+                                                     zone.zone_id + "\')\"/><img src=\'img/pause.png\'></src></a>\n";
+  } else {
+    document.getElementById("playPause").innerHTML = "<a href=\'javascript:void(0);\' onclick=\"goPlayPause(\'" +
+                                                     zone.zone_id + "\')\"/><img src=\'img/play.png\'></src></a>\n";
+  }
+//  document.getElementById("playPause").innerHTML = "<input type=\"button\" value=\"play/pause\" onclick=\"goPlayPause(\'" +
+//                                              zone.zone_id + "\')\"/>\n";
 
-  document.getElementById("next").innerHTML = "<input type=\"button\" value=\"next\" onclick=\"goNext(\'" + 
+  document.getElementById("next").innerHTML = "<input type=\"button\" value=\"next\" onclick=\"goNext(\'" +
                                               zone.zone_id + "\')\"/>\n";
 }
 
@@ -132,7 +139,7 @@ function changeVolume(volume, outputId) {
 }
 
 function rangeMouseDown() {
-  inRangeSlider = true;  
+  inRangeSlider = true;
 }
 
 function rangeMouseUp() {
@@ -143,12 +150,10 @@ function goPrev(zone_id) {
   socket.emit('goPrev', zone_id);
 }
 
-function goNext(zone_id) {  
+function goNext(zone_id) {
   socket.emit('goNext', zone_id);
 }
 
 function goPlayPause(zone_id) {
-console.log("status:" + zones[zone_id].state);
   socket.emit('goPlayPause', zone_id);
 }
-
