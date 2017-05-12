@@ -13,7 +13,7 @@ var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 
-const PORT = 3002; 
+const PORT = 3002;
 
 app.use(express.static(path.join(__dirname, '')));
 
@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
   next();
 });
 
- 
+
 var core;
 var zones = [];
 
@@ -83,10 +83,6 @@ server.listen(PORT, function() {
 
 // ---------------------------- WEB SOCKET --------------
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/player.html');
-});
-
 io.on('connection', function(socket){
 //  console.log('a user connected');
   io.emit("zones", zones);
@@ -127,4 +123,40 @@ io.on('connection', function(socket){
      });
   });
 
+});
+
+// --------------------- http gets -------------------------
+
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/player.html');
+});
+
+app.get('/roonAPI/listZones', function(req, res) {
+  res.send({
+    "zones": zones
+  })
+});
+
+app.get('/roonAPI/play_pause', function(req, res) {
+    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'playpause');
+
+   res.send({
+    "status": "success"
+  })
+});
+
+app.get('/roonAPI/previous', function(req, res) {
+    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'previous');
+
+    res.send({
+       "zone": req.headers.referer
+    })
+});
+
+app.get('/roonAPI/next', function(req, res) {
+  core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'next');
+
+  res.send({
+    "zone": core.services.RoonApiTransport.zone_by_zone_id(req.query['zoneId'])
+  })
 });
