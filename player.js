@@ -3,9 +3,8 @@ var topUrl = window.location.protocol + "//" + window.location.hostname + ":" + 
 var socket = io();
 var zones;
 var curZone;
-var lastSong = "";
 var lastPicture = "";
-var lastVolume = 0;
+var lastState = "";
 var inRangeSlider = false;
 
 socket.on('zones', function(msg){
@@ -59,7 +58,7 @@ function updateZone(msg) {
   var zone = msg[curZone];
 
   if ( zone.now_playing != null ) {
-     show_zone(msg[curZone]);
+     show_zone( zone );
 
      if ( lastPicture != zone.now_playing.image_key ) {
        lastPicture = zone.now_playing.image_key;
@@ -116,15 +115,17 @@ function show_zone(zone) {
   document.getElementById("prev").innerHTML = "<input type=\"button\" value=\"prev\" onclick=\"goPrev(\'" +
                                                      zone.zone_id + "\')\"/>\n";
 
-  if ( zone.state == "playing") {
-    document.getElementById("playPause").innerHTML = "<a href=\'javascript:void(0);\' onclick=\"goPlayPause(\'" +
-                                                     zone.zone_id + "\')\"/><img src=\'img/pause.png\'></src></a>\n";
-  } else {
-    document.getElementById("playPause").innerHTML = "<a href=\'javascript:void(0);\' onclick=\"goPlayPause(\'" +
-                                                     zone.zone_id + "\')\"/><img src=\'img/play.png\'></src></a>\n";
+  if ( lastState != zone.state ) {
+    if ( zone.state == "playing") {
+      document.getElementById("playPause").innerHTML = "<a href=\'javascript:void(0);\' onclick=\"goPlayPause(\'" +
+                                                       zone.zone_id + "\')\"/><img src=\'img/pause.png\'></src></a>\n";
+    } else {
+      document.getElementById("playPause").innerHTML = "<a href=\'javascript:void(0);\' onclick=\"goPlayPause(\'" +
+                                                       zone.zone_id + "\')\"/><img src=\'img/play.png\'></src></a>\n";
+    }
   }
-//  document.getElementById("playPause").innerHTML = "<input type=\"button\" value=\"play/pause\" onclick=\"goPlayPause(\'" +
-//                                              zone.zone_id + "\')\"/>\n";
+
+  lastState = zone.state;
 
   document.getElementById("next").innerHTML = "<input type=\"button\" value=\"next\" onclick=\"goNext(\'" +
                                               zone.zone_id + "\')\"/>\n";
