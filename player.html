@@ -6,29 +6,30 @@
 
 
 <!--HEADER-->
-<div id="header"> 
+<div id="header">
 	<div id="logo"> </div>
-	<div id="zone"> 
+	<div id="zone">
 		<select id="zoneList" onchange="updateSelected()">
-		</select> 
+		</select>
 	</div>
 </div>
 
 
 <!--MAIN-->
-<div id="main"> 
-	<div id="icon"></div>
-	<div id="musicinfo">
+<div id="main">
+	<table><tr>
+	<td vertical-align="top"><div id="icon"></div></td>
+	<td vertical-align="top"><div id="musicinfo">
 		Artist: <div id="artist" class="relevantinfo"></div><br>
 		Album: <div id="album" class="relevantinfo"></div><br>
 		Track: <div id="track" class="relevantinfo"></div>
-	</div>
+	</div></td>
+</tr></table>
 </div>
 
 
-
-<div id="transport"> 
-<div id="transportctl"> 
+<div id="transport">
+<div id="transportctl">
 
 	<div id="prev" class="prev"></div>
 	<div id="playPause" class="play"></div>

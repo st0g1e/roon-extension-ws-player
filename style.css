@@ -92,8 +92,8 @@ ul li {
 	float: left;
 	margin-top: 30px;
 	color: #555;
-
 }
+
 #icon {
 	float: left;
 	border: 1px white;
@@ -111,13 +111,13 @@ ul li {
 #musicinfo {
 	float: left;
 	margin-left: 30px;
-
 }
 
 .relevantinfo {
 	color: #fff;
 	font-size: 20px;
 	font-weight: normal;
+	width: 100%;
 }
 
 #transport {
