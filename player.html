@@ -1,31 +1,42 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/player.js"></script>
-<h1>roon webplayer</h1>
-<hr>
-Zones: <select id="zoneList" onchange="updateSelected()">
-</select> 
+<link rel="stylesheet" type="text/css" href="style.css">
 
-<p></p>
-<table><tr>
-<td>Artist:</td><td><div id="artist"></div></td>
-</tr><tr>
-<td>Album:</td><td><div id="album"></div></td>
-</tr><tr>
-<td>Track:</td><td><div id="track"></div></td>
-</tr></table>
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 
-<p></p>
-<center>
 
-<table><tr>
-<td colspan=3><center><div id="icon"></div></center></td>
-</tr><tr>
-<td colspan=3><center><div id="rangeSlider"></div></center></td>
-</tr><tr>
-<form>
-<td><div id="prev"></div></td>
-<td><div id="playPause"></div></td>
-<td><div id="next"></div></td>
-</form>
-</tr></table>
-</center>
+<!--HEADER-->
+<div id="header"> 
+	<div id="logo"> </div>
+	<div id="zone"> 
+		<select id="zoneList" onchange="updateSelected()">
+		</select> 
+	</div>
+</div>
+
+
+<!--MAIN-->
+<div id="main"> 
+	<div id="icon"></div>
+	<div id="musicinfo">
+		Artist: <div id="artist" class="relevantinfo"></div><br>
+		Album: <div id="album" class="relevantinfo"></div><br>
+		Track: <div id="track" class="relevantinfo"></div>
+	</div>
+</div>
+
+
+
+<div id="transport"> 
+<div id="transportctl"> 
+
+	<div id="prev" class="prev"></div>
+	<div id="playPause" class="play"></div>
+	<div id="next" class="next"></div>
+
+</div>
+</div>
+
+<div id="volumefooter">
+	<div id="rangeSlider" class="volume"></div>
+</div>
