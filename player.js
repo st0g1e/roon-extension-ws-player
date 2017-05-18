@@ -84,6 +84,10 @@ function blank_page() {
 function updateSelected() {
   curZone = document.getElementById("zoneList").options[document.getElementById("zoneList").selectedIndex].value;
 
+  lastPicture = "";
+  lastState = "";
+  inRangeSlider = false;
+
   updateZone( zones );
 }
 

@@ -1,5 +1,5 @@
 body {
-		background-color: black;
+	background-color: black;
 	color: white;
 	font-family: 'Lato', sans-serif;
 	font-weight: bold;
@@ -66,7 +66,7 @@ h1 {
 
 #header {
 	float: left;
-	height: 50px;
+	height: 30px;
 	width: 100%;
 }
 #logo {
@@ -79,7 +79,7 @@ h1 {
 
 #zone {
 	float: right;
-	height: 50px;
+	height: 15px;
 	margin: 0 auto;
 }
 
@@ -90,32 +90,35 @@ ul li {
 
 #main {
 	float: left;
-	margin-top: 30px;
+	margin-top: 10px;
 	color: #555;
+	width: 100%;
+	margin-left: auto;
+  margin-right: auto;
 }
+
 #icon {
-	float: left;
-        padding-right: 10px;
+	width: auto;
 }
 
 #icon img {
-	float: left;
-	margin-left: 50px;
-	height: 200px;
-	width: 200px;
-		background-color: #fff;
-		padding: 4px;
-        border: 1px white;
+	height: 150px;
+	width: 150px;
+	background-color: #fff;
+	padding: 1px;
+  border: 1px white;
+	display: block;
+  margin: 0 auto;
 }
 
 #musicinfo {
 	float: left;
-	margin-left: 30px;
+	margin-left: 10px;
 }
 
 .relevantinfo {
 	color: #fff;
-	font-size: 20px;
+	font-size: 15px;
 	font-weight: normal;
 }
 
@@ -231,14 +234,12 @@ input[type=range]:focus::-ms-fill-upper {
 
 
 select {
-	/* irrelevante Eigenschaften gekürzt */
 	border: 1px solid #444;
 	padding:.75em 1em .5em 1em;
 	box-shadow: 0 2px 1px 0 rgba(0,0,0,1);
 	background-color:#000;
 	color:white;
-	height: 60px;
-	margin: 20px;
+	height: 30px;
 }
 
 option {

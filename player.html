@@ -1,32 +1,29 @@
 <script src="/socket.io/socket.io.js"></script>
 <script src="/player.js"></script>
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel='stylesheet' media='screen and (max-width: 480px)' href='small.css' />
+<link rel='stylesheet' media='screen and (min-width: 481px)' href='style.css' />
 
 <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
 
 
 <!--HEADER-->
 <div id="header">
-	<div id="logo"> </div>
+<!--	<div id="logo"> </div> -->
 	<div id="zone">
-		<select id="zoneList" onchange="updateSelected()">
-		</select>
+		<select id="zoneList" onchange="updateSelected()"></select>
 	</div>
 </div>
 
 
 <!--MAIN-->
 <div id="main">
-  <table padding="10px"><tr>
-	<td vertical-align="top"><div id="icon"></div></td>
-	<td vertical-align="top"<div id="musicinfo">
+	<div id="icon"></div>
+	<div id="musicinfo">
 		Artist: <div id="artist" class="relevantinfo"></div><br>
 		Album: <div id="album" class="relevantinfo"></div><br>
 		Track: <div id="track" class="relevantinfo"></div>
-	</div></td>
-  </tr></table>
+	</div>
 </div>
-
 
 
 <div id="transport">
