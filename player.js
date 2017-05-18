@@ -62,7 +62,21 @@ function updateZone(msg) {
 
      if ( lastPicture != zone.now_playing.image_key ) {
        lastPicture = zone.now_playing.image_key;
-       socket.emit('getImage', zone.now_playing.image_key);
+
+       if ( zone.now_playing.image_key == null ) {
+         var img = new Image();
+         img.src = 'img/black.png';
+
+         var list = document.getElementById("icon");
+
+         if ( list.childNodes.length > 0 ) {
+           list.removeChild(list.childNodes[0]);
+         }
+
+         list.appendChild(img);
+       } else {
+         socket.emit('getImage', zone.now_playing.image_key);
+       }
      }
   } else {
     blank_page();
@@ -70,6 +84,10 @@ function updateZone(msg) {
 }
 
 function blank_page() {
+  lastPicture = "";
+  lastState = "";
+  inRangeSlider = false;
+
   document.getElementById("artist").innerHTML = "";
   document.getElementById("album").innerHTML = "";
   document.getElementById("track").innerHTML = "";
@@ -84,10 +102,7 @@ function blank_page() {
 function updateSelected() {
   curZone = document.getElementById("zoneList").options[document.getElementById("zoneList").selectedIndex].value;
 
-  lastPicture = "";
-  lastState = "";
-  inRangeSlider = false;
-
+  blank_page();
   updateZone( zones );
 }
 
