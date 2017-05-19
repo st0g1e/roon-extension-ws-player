@@ -2,6 +2,7 @@ var RoonApi          = require("node-roon-api");
 var RoonApiTransport = require("node-roon-api-transport");
 var RoonApiStatus    = require("node-roon-api-status");
 var RoonApiImage     = require("node-roon-api-image");
+var RoonApiSettings  = require('node-roon-api-settings');
 
 var path = require('path');
 var transport;
@@ -12,8 +13,6 @@ var http = require('http');
 var app = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
-
-const PORT = 3002;
 
 app.use(express.static(path.join(__dirname, '')));
 
@@ -60,11 +59,57 @@ var roon = new RoonApi({
    }
 });
 
+var mysettings = roon.load_config("settings") || {
+    webport: "3002",
+};
+
+function makelayout(settings) {
+    var l = {
+      values:    settings,
+	    layout:    [],
+	    has_error: false
+    };
+
+    l.layout.push({
+        type:      "string",
+        title:     "HTTP Port",
+        maxlength: 256,
+        setting:   "webport",
+    });
+
+    l.layout.push({
+        type:      "string",
+        title:     "Default Zone",
+        maxlength: 256,
+        setting:   "defaultZone",
+    });
+
+    return l;
+}
+
+var svc_settings = new RoonApiSettings(roon, {
+    get_settings: function(cb) {
+        cb(makelayout(mysettings));
+    },
+    save_settings: function(req, isdryrun, settings) {
+	let l = makelayout(settings.values);
+        req.send_complete(l.has_error ? "NotValid" : "Success", { settings: l });
+
+        if (!isdryrun && !l.has_error) {
+            var oldport = mysettings.webport;
+            mysettings = l.values;
+            svc_settings.update_settings(l);
+            if (oldport != mysettings.webport) change_web_port(mysettings.webport);
+            roon.save_config("settings", mysettings);
+        }
+    }
+});
+
 var svc_status = new RoonApiStatus(roon);
 
 roon.init_services({
    required_services: [ RoonApiTransport, RoonApiImage ],
-   provided_services: [ svc_status ],
+   provided_services: [ svc_status, svc_settings ],
 });
 
 svc_status.set_status("Extension enabled", false);
@@ -77,8 +122,15 @@ function get_image(image_key, scale, width, height, format) {
    });
 };
 
-server.listen(PORT, function() {
-   console.log('Listening on port' + PORT);
+function change_web_port() {
+   server.close();
+   server.listen(mysettings.webport, function() {
+   console.log('Listening on port: ' + mysettings.webport);
+   });
+}
+
+server.listen(mysettings.webport, function() {
+   console.log('Listening on port: ' + mysettings.webport);
 });
 
 // ---------------------------- WEB SOCKET --------------
@@ -86,6 +138,7 @@ server.listen(PORT, function() {
 io.on('connection', function(socket){
 //  console.log('a user connected');
   io.emit("zones", zones);
+  io.emit("defaultZone", mysettings.defaultZone);
 
   socket.on('disconnect', function(){
 //    console.log('user disconnected');

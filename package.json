@@ -10,6 +10,7 @@
     "node-roon-api-image": "github:roonlabs/node-roon-api-image",
     "node-roon-api-status": "github:roonlabs/node-roon-api-status",
     "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
+    "node-roon-api-settings": "github:roonlabs/node-roon-api-settings",
     "socket.io": "^1.7.3"
   }
 }
