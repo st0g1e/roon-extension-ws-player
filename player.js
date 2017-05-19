@@ -117,7 +117,7 @@ function blank_page() {
   document.getElementById("prev").innerHTML = "";
   document.getElementById("playPause").innerHTML = "";
   document.getElementById("next").innerHTML = "";
-  document.getElementById("rangeSlider").innerHTML = "";
+  document.getElementById("trackSeek").innerHTML = "";
   document.getElementById("icon").innerHTML = "";
 }
 
@@ -136,21 +136,37 @@ function show_zone(zone) {
 
   // Volumes
 
-  sliderHtml = "";
+  vlmHtml = "";
   for ( var i in zone.outputs ) {
     if ( zone.outputs[i].zone_id == zone.zone_id && zone.outputs[i].volume != null ) {
-      sliderHtml += "<input type=\"range\"";
-      sliderHtml += " min=" + zone.outputs[i].volume.min;
-      sliderHtml += " max=" + zone.outputs[i].volume.max;
-      sliderHtml += " value=" + zone.outputs[i].volume.value;
-      sliderHtml += " step=\"1\"";
-      sliderHtml += " onmousedown=\"rangeMouseDown()\"\n";
-      sliderHtml += " onmouseUp=\"rangeMouseUp()\"\n";
-      sliderHtml += " onchange=\"changeVolume(this.value, \'" + zone.outputs[i].output_id + "\')\" \/>\n";
+      vlmHtml += "<input type=\"range\" class=\"volume\"";
+      vlmHtml += " min=" + zone.outputs[i].volume.min;
+      vlmHtml += " max=" + zone.outputs[i].volume.max;
+      vlmHtml += " value=" + zone.outputs[i].volume.value;
+      vlmHtml += " step=\"1\"";
+      vlmHtml += " onmousedown=\"rangeMouseDown()\"\n";
+      vlmHtml += " onmouseUp=\"rangeMouseUp()\"\n";
+      vlmHtml += " onchange=\"changeVolume(this.value, \'" + zone.outputs[i].output_id + "\')\" \/>\n";
     }
   }
 
-  document.getElementById("rangeSlider").innerHTML = sliderHtml;
+  document.getElementById("volume").innerHTML = vlmHtml;
+
+// Track seek
+
+trackSeekHtml = "";
+  if ( zone.now_playing != null && zone.now_playing.seek_position != null ) {
+    trackSeekHtml += "<input type=\"range\" class=\"seek\"";
+    trackSeekHtml += " min=" + 0;
+    trackSeekHtml += " max=" + zone.now_playing.length;
+    trackSeekHtml += " value=" + zone.now_playing.seek_position;
+    trackSeekHtml += " step=\"1\"";
+    trackSeekHtml += " onmousedown=\"rangeMouseDown()\"\n";
+    trackSeekHtml += " onmouseUp=\"rangeMouseUp()\"\n";
+    trackSeekHtml += " onchange=\"seekTo(this.value, \'" + zone.outputs[i].output_id + "\')\" \/>\n";
+}
+
+document.getElementById("trackSeek").innerHTML = trackSeekHtml;
 
   // Navigation Buttons
 
@@ -179,6 +195,14 @@ function changeVolume(volume, outputId) {
   vol.outputId = outputId;
 
   socket.emit('changeVolume', JSON.stringify(vol));
+}
+
+function seekTo(seek, outputId) {
+  var seekNow = new Object();
+  seekNow.seek = seek;
+  seekNow.outputId = outputId;
+
+  socket.emit('seek', JSON.stringify(seekNow));
 }
 
 function rangeMouseDown() {

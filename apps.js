@@ -150,6 +150,12 @@ io.on('connection', function(socket){
     transport.change_volume(obj.outputId, "absolute", obj.volume);
   });
 
+  socket.on('seek', function(msg) {
+      var obj = JSON.parse(msg);
+
+      transport.seek(obj.outputId, "absolute", obj.seek);
+  });
+
   socket.on('goPrev', function(msg){
     transport.control(msg, 'previous');
   });
