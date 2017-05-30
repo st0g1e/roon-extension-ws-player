@@ -3,6 +3,7 @@ var RoonApiTransport = require("node-roon-api-transport");
 var RoonApiStatus    = require("node-roon-api-status");
 var RoonApiImage     = require("node-roon-api-image");
 var RoonApiSettings  = require('node-roon-api-settings');
+var RoonApiBrowse    = require("node-roon-api-browse");
 
 var path = require('path');
 var transport;
@@ -108,7 +109,7 @@ var svc_settings = new RoonApiSettings(roon, {
 var svc_status = new RoonApiStatus(roon);
 
 roon.init_services({
-   required_services: [ RoonApiTransport, RoonApiImage ],
+   required_services: [ RoonApiTransport, RoonApiImage, RoonApiBrowse ],
    provided_services: [ svc_status, svc_settings ],
 });
 
@@ -137,7 +138,7 @@ server.listen(mysettings.webport, function() {
 
 io.on('connection', function(socket){
 //  console.log('a user connected');
-  io.emit("zones", zones);
+  io.emit("initialzones", zones);
   io.emit("defaultZone", mysettings.defaultZone);
 
   socket.on('disconnect', function(){
@@ -219,3 +220,91 @@ app.get('/roonAPI/next', function(req, res) {
     "zone": core.services.RoonApiTransport.zone_by_zone_id(req.query['zoneId'])
   })
 });
+
+app.get('/roonAPI/listSearch', function(req, res) {
+   refresh_browse( req.query['zoneId'], { item_key: req.query['item_key'], input: req.query['toSearch'] }, 0, 100, function(myList) {
+    res.send({
+      "list": myList
+    })
+  });
+});
+
+app.get('/roonAPI/listByItemKey', function(req, res) {
+   refresh_browse( req.query['zoneId'], { item_key: req.query['item_key'] }, 0, 100, function(myList) {
+
+   res.send({
+     "list": myList
+   })
+  });
+});
+
+app.get('/roonAPI/goUp', function(req, res) {
+   refresh_browse( req.query['zoneId'], { pop_levels: 1 }, 1, 100,  function(myList) {
+
+    res.send({
+      "list": myList
+    })
+  });
+
+});
+
+app.get('/roonAPI/goHome', function(req, res) {
+   refresh_browse( req.query['zoneId'], { pop_all: true }, 1, 100, function(myList) {
+
+   res.send({
+     "list": myList
+    })
+  });
+});
+
+app.get('/roonAPI/listRefresh', function(req, res) {
+   refresh_browse( req.query['zoneId'], { refresh_list: true }, 0, 0, function(myList) {
+
+   res.send({
+     "list": myList
+    })
+  });
+});
+
+app.get('/roonAPI/getIcon', function( req, res ) {
+  get_image( req.query['image_key'], "fit", 100, 100, "image/jpeg", res);
+});
+
+// --------------- Helper Functions -----------------------
+
+function refresh_browse(zone_id, opts, page, listPerPage, cb) {
+    var items = [];
+    opts = Object.assign({
+        hierarchy:          "browse",
+        zone_or_output_id:  zone_id,
+    }, opts);
+
+
+    core.services.RoonApiBrowse.browse(opts, (err, r) => {
+        if (err) { console.log(err, r); return; }
+
+        if (r.action == 'list') {
+            page = ( page - 1 ) * listPerPage;
+
+            core.services.RoonApiBrowse.load({
+                hierarchy:          "browse",
+                offset:             page,
+                set_display_offset: listPerPage,
+            }, (err, r) => {
+                items = r.items;
+
+                cb(r.items);
+            });
+        }
+    });
+}
+
+function get_image(image_key, scale, width, height, format, res) {
+   core.services.RoonApiImage.get_image(image_key, {scale, width, height, format}, function(cb, contentType, body) {
+
+      res.contentType = contentType;
+
+      res.writeHead(200, {'Content-Type': 'image/gif' });
+      res.end(body, 'binary');
+   });
+};
