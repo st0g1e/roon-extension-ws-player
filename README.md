@@ -117,4 +117,21 @@ Pause/Play Button
   socket.emit('goPlayPause', zone_id);
 ```
 
+## Using Docker
+
+### Building
+
+```bash
+docker build -t wsplayer .
+```
+
+### Running
+
+```bash
+docker run -p 3002 wsplayer
+```
+
+### Current issues
+It doesn't seem to find the core, even if its running on the same host sharing the same network stack:
+`docker run -p 3002:3002 --net=host wsplayer`
 
