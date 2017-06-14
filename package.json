@@ -6,12 +6,12 @@
   "private": true,
   "dependencies": {
     "express": "4.x",
-    "node-roon-api": "github:roonlabs/node-roon-api",
-    "node-roon-api-image": "github:roonlabs/node-roon-api-image",
-    "node-roon-api-status": "github:roonlabs/node-roon-api-status",
-    "node-roon-api-transport": "github:roonlabs/node-roon-api-transport",
-    "node-roon-api-settings": "github:roonlabs/node-roon-api-settings",
-    "node-roon-api-browse"      : "github:roonlabs/node-roon-api-browse",
+    "node-roon-api": "roonlabs/node-roon-api",
+    "node-roon-api-image": "roonlabs/node-roon-api-image",
+    "node-roon-api-status": "roonlabs/node-roon-api-status",
+    "node-roon-api-transport": "roonlabs/node-roon-api-transport",
+    "node-roon-api-settings": "roonlabs/node-roon-api-settings",
+    "node-roon-api-browse"      : "roonlabs/node-roon-api-browse",
     "socket.io": "^1.7.3"
   }
 }

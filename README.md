@@ -117,4 +117,28 @@ Pause/Play Button
   socket.emit('goPlayPause', zone_id);
 ```
 
+## Running in Docker
+This should work with any Linux system with a recent version of [Docker](http://www.docker.com) installed, Docker for Windows, or Docker for Mac which both include a Linux VM. 
 
+Once you've cloned this source, it's very simple to get a container up and running with the right version of Node.JS and all the dependencies. This will avoid conflicts between multiple versions of Node.JS and make sure you're always testing in a clean environment.
+
+### Building
+
+Be sure you're in your source directory, then run
+```bash
+docker build -t wsplayer .
+```
+
+### Running
+
+If you're a developer and want to see the output, then run
+```bash
+docker run -p 3002:3002 -it wsplayer
+```
+
+If you want to run it in the background, then run
+```bash
+docker run -d -p 3002:3002 wsplayer
+```
+
+Browse to your Docker's host IP (or http://127.0.0.1:3002 if you're running Docker for Windows or Docker for Mac), and you're connected! Don't forget to authorize the extension on the Roon core as mentioned above!
