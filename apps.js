@@ -27,12 +27,15 @@ app.use(function(req, res, next) {
 var core;
 var zones = [];
 
+var timeout;
+
 var roon = new RoonApi({
    extension_id:        'st0g1e.roon-ws-browser',
    display_name:        "roon-ws-browser",
-   display_version:     "0.0.1",
+   display_version:     "2.0.0",
    publisher:           'bastian ramelan',
-   email:		'st0g1e@yahoo.com',
+   email:		            'st0g1e@yahoo.com',
+   log_level:           'none',
 
    core_paired: function(core_) {
 	core = core_;
@@ -205,6 +208,22 @@ app.get('/roonAPI/play_pause', function(req, res) {
   })
 });
 
+app.get('/roonAPI/pause', function(req, res) {
+    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'pause');
+
+   res.send({
+    "status": "success"
+  })
+});
+
+app.get('/roonAPI/play', function(req, res) {
+    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'play');
+
+   res.send({
+    "status": "success"
+  })
+});
+
 app.get('/roonAPI/previous', function(req, res) {
     core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'previous');
 
@@ -308,3 +327,226 @@ function get_image(image_key, scale, width, height, format, res) {
       res.end(body, 'binary');
    });
 };
+
+// Timers
+
+app.get('/roonAPI/addTimer', function(req, res) {
+  save_timer( req.query['zoneId'],
+              req.query['frequency'],
+              req.query['hour'],
+              req.query['minute'],
+              req.query['isRepeat']);
+
+  var timers = get_timers();
+
+  res.send({
+    "timers": timers
+  })
+});
+
+app.get('/roonAPI/getTimers', function(req, res) {
+  var timers = get_timers();
+
+  res.send({
+    "timers": timers
+  })
+});
+
+app.get('/roonAPI/removeTimer', function(req, res) {
+  var timers = get_timers();
+  var idToRemove = req.query['id'];
+
+  for ( var i in timers ) {
+    if ( timers[i].id == idToRemove ) {
+      timers.splice(i, 1);
+      break;
+    }
+  }
+
+  roon.save_config("my_timers", timers);
+
+  run_later();
+  var timers = get_timers();
+
+  res.send({
+   "timers": timers
+  })
+});
+
+function get_timers() {
+  var run_laters = roon.load_config("my_timers");
+
+  return run_laters;
+}
+
+function save_timer(zoneId, frequency, hour, minute, isRepeat ) {
+  var toAdd = {};
+
+  var timers = get_timers();
+
+  if ( timers == null ) {
+    timers = [];
+  }
+
+  toAdd.id = Math.floor(Date.now() / 1000);
+  toAdd.frequency = frequency;
+  toAdd.hour = hour;
+  toAdd.minute = minute;
+  toAdd.isRepeat = isRepeat;
+  toAdd.zone_id = zoneId;
+
+  toAdd.nextRun = nextRun( frequency, hour, minute, isRepeat);
+
+  if ( timers == null ) {
+    timers = [];
+  }
+
+  timers.push(toAdd);
+
+  roon.save_config("my_timers", timers);
+  refresh_timer();
+}
+
+function refresh_timer() {
+  var timers = get_timers();
+
+
+  var dateNow = new Date();
+
+  var newTimers = [];
+  var isFirst = true;
+
+  for ( var i in timers ) {
+    if (timers[i].nextRun > dateNow.getTime() ) {
+      if ( newTimers == null ) {
+        newTimers = [];
+      }
+
+      newTimers.push( timers[i]);
+    } else {
+      if ( timers[i].command != "Once" && timers[i].isRepeat == "Yes") {
+        timers[i].nextRun = nextRun( timers[i].frequency,
+                                              timers[i].hour,
+                                              timers[i].minute,
+                                              timers[i].isRepeat);
+
+        if ( newTimers == null ) {
+          newTimers = [];
+        }
+
+        newTimers.push( timers[i]);
+      }
+    }
+  }
+
+  newTimers.sort(compare)
+  roon.save_config("my_timers", newTimers);
+
+  run_later();
+}
+
+function compare(a, b) {
+  //arrayname.sort(compare);
+  if ( a.nextRun < b.nextRun ) { return -1; }
+  if ( a.nextRun > b.nextRun ) { return 1; }
+  return 0;
+}
+
+
+function nextRun( frequency, hour, minute, isRepeat) {
+  var days = {};
+  days['Sunday']    = 0;
+  days['Monday']    = 1;
+  days['Tuesday']   = 2;
+  days['Wednesday'] = 3;
+  days['Thursday']  = 4;
+  days['Friday']    = 5;
+  days['Saturday']  = 6;
+
+  var returnDate = new Date();
+  var isToday = false;
+
+  // check if the timer needs to run today
+  if ( (returnDate.getHours() < hour || ( returnDate.getHours() == hour && returnDate.getMinutes() < minute )) &&
+        ( frequency == "Once" || frequency == "Daily" ||
+          ( frequency in days && days[frequency] == returnDate.getDay() ) ||
+          ( frequency == "Weekdays" && returnDate.getDay() < 5 ) ) ) {
+
+            returnDate.setHours( hour );
+            returnDate.setMinutes( minute );
+            returnDate.setSeconds( 0 );
+
+            isToday = true;
+  } else {
+    if ( frequency in days) {
+      returnDate = nextDate( days[frequency] );
+    } else {
+      if ( frequency == "Daily") {
+        returnDate = nextDate( (returnDate.getDay() + 1) % 7 );
+      } else if ( frequency == "Weekdays" ) {
+        if ( returnDate.getDay() > 5 ) {
+          returnDate = nextDate( 1 );
+        } else {
+          returnDate = nextDate( returnDate.getDay() + 1);
+        }
+      }
+    }
+
+    returnDate.setHours( hour );
+    returnDate.setMinutes( minute );
+    returnDate.setSeconds( 0 );
+  }
+
+  return returnDate.getTime();
+}
+
+//takes dayIndex from sunday(0) to saturday(6)
+function nextDate(dayIndex) {
+    var today = new Date();
+    today.setDate(today.getDate() + (dayIndex - 1 - today.getDay() + 7) % 7 + 1);
+    return today;
+}
+
+function run_later() {
+  clearTimeout(timeout);
+
+  var timers = get_timers();
+  var timer;
+
+  if ( timers != null && timers.length > 0 ) {
+    timer = timers[0];
+
+    var date = new Date(parseInt(timer.nextRun));
+    var curDate = new Date();
+
+    var lapse = date - curDate;
+
+    timeout = setTimeout( function () {
+      playAlarm();
+      run_later();
+    },  lapse);
+  }
+}
+
+function playAlarm() {
+  var timers = get_timers();
+  var dateNow = new Date();
+
+  for ( var i in timers ) {
+    if (timers[i].nextRun <= dateNow.getTime() ) {
+        playZone( timers[i].zone_id);
+        io.emit("alarmWentOff", timers[i].zone_id);
+    }
+  }
+
+  refresh_timer();
+}
+
+function playZone(zoneId) {
+  core.services.RoonApiTransport.control(zoneId, 'play');
+}
+
+function pauseZone(zoneId) {
+  refresh_timer();
+  core.services.RoonApiTransport.control(zoneId, 'pause');
+}

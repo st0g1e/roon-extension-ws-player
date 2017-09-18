@@ -1,0 +1,58 @@
+body {
+	background-color: black;
+	color: white;
+	font-family: 'Lato', sans-serif;
+	font-weight: bold;
+	font-size: 10px
+}
+
+select {
+	border: 1px solid #444;
+	padding:.75em 1em .5em 1em;
+	box-shadow: 0 0px 0px 0 rgba(0,0,0,1);
+	background-color:#000;
+	color:white;
+	height: 20px;
+	margin: 0px 20px 0px 20px;
+}
+
+#addTimerArea {
+  width: 100%;
+  height: 120px;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  margin: auto;
+}
+
+option {
+	background:#000;
+	border-top:1px solid #444;
+	padding:.1em 1em .1m 1em;
+}
+
+input[type=button] {
+  float: right;
+  border: 1px solid #444;
+	padding: .5em 1em .5em 1em;
+	box-shadow: 0 0px 0px 0 rgba(0,0,0,1);
+	background-color:#000;
+	color:white;
+	height: 25px;
+	margin: 0px 20px 0px 20px;
+}
+
+
+table {
+  border-collapse: collapse;
+  width: 350px;
+  border: 1px solid white;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}

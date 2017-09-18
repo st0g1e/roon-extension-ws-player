@@ -1,0 +1,88 @@
+body {
+	background-color: black;
+	color: white;
+	font-family: 'Lato', sans-serif;
+	font-weight: bold;
+	font-size: 10px
+}
+
+a:link {
+    color: white;
+		text-decoration: none
+}
+
+/* visited link */
+a:visited {
+    color: white;
+		text-decoration: none
+}
+
+/* mouse over link */
+a:hover {
+    color: #567fa0;
+		text-decoration: none
+}
+
+#header {
+	float: left;
+	height: 50px;
+	width: 100%;
+}
+
+#back {
+	float: left;
+	height: 50px;
+	margin: 0 auto;
+	font-size: 15px
+}
+
+#zone {
+	float: right;
+	height: 50px;
+	margin: 0 auto;
+	font-size: 15px
+}
+
+
+#TimerArea {
+	float: left;
+  width: 100%;
+	margin-top: 30px;
+	color: #555;
+	white-space: nowrap;
+	word-wrap: break-word
+}
+
+#galleryAreaCtl {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+/*  align-items: center;  for vertical alignment */
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+select {
+	border: 1px solid #444;
+	padding:.75em 1em .5em 1em;
+	box-shadow: 0 0px 0px 0 rgba(0,0,0,1);
+	background-color:#000;
+	color:white;
+	height: 20px;
+	margin: 0px 20px 0px 20px;
+}
+
+option {
+	background:#000;
+	border-top:1px solid #444;
+	padding:.1em 1em .1m 1em;
+}

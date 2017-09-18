@@ -1,0 +1,90 @@
+body {
+	background-color: black;
+	color: white;
+	font-family: 'Lato', sans-serif;
+	font-weight: normal;
+	font-size: 10px
+}
+
+#header {
+	float: left;
+	height: 50px;
+	width: 100%;
+}
+
+#back {
+	float: left;
+	height: 50px;
+	margin: 0 auto;
+	font-size: 15px
+}
+
+#zone {
+	float: right;
+	height: 50px;
+	margin: 0 auto;
+	font-size: 15px
+}
+
+
+#snoozeArea {
+	float: left;
+  width: 100%;
+	margin-top: 30px;
+	color: #555;
+	white-space: nowrap;
+	word-wrap: break-word
+}
+
+#snoozeAreaCtl {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+/*  align-items: center;  for vertical alignment */
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+.round-button {
+  width:75px;
+}
+.round-button-circle {
+  width: 100%;
+  height:0;
+  padding-bottom: 100%;
+  border-radius: 50%;
+  border:1px solid #ffffff;
+  overflow:hidden;
+
+  background: #000000;
+  box-shadow: 0 0 3px gray;
+
+	font-weight: normal;
+}
+
+.round-button-circle:hover {
+  font-weight:bold;
+}
+.round-button a {
+  display:block;
+  float:left;
+  width:100%;
+  padding-top:50%;
+  padding-bottom:50%;
+  line-height:1em;
+  margin-top:-0.5em;
+
+  text-align:center;
+  color:#e2eaf3;
+  text-decoration:none;
+	font-weight: normal;
+}

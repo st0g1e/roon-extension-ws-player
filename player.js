@@ -31,6 +31,15 @@ socket.on('zones', function(msg){
    }
 });
 
+socket.on('alarmWentOff', function(msg){
+  zoneId = msg;
+
+  if ( zoneId == curZone ) {
+    location.href = "snooze.html?zone_id=" + zoneId;
+  }
+});
+
+
 socket.on('defaultZone', function(msg){
   if ( urlZone == "") {
       for (var i in zones) {
@@ -86,7 +95,9 @@ function updateZoneList() {
     document.getElementById("zoneList").innerHTML = html;
 
     document.getElementById("search").innerHTML = "<a href=\"browser.html?zone_id=" + curZone + "\">" +
-                                                  "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n";
+                                                  "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n" +
+                                                  "<a href=\"timers.html?zone_id=" + curZone + "\">" +
+                                                  "<img src=\"img/alarm.png\" width=\"15\" height=\"15\"></a>\n";
 
   }
 }
@@ -144,7 +155,9 @@ function updateSelected() {
 
   blank_page();
   document.getElementById("search").innerHTML = "<a href=\"browser.html?zone_id=" + curZone + "\">" +
-                                                "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n";
+                                                "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n" +
+                                                "<a href=\"timers.html?zone_id=" + curZone + "\">" +
+                                                "<img src=\"img/alarm.png\" width=\"15\" height=\"15\"></a>\n";
   updateZone();
 }
 
