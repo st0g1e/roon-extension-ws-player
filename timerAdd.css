@@ -6,6 +6,23 @@ body {
 	font-size: 10px
 }
 
+a:link {
+    color: white;
+		text-decoration: none
+}
+
+/* visited link */
+a:visited {
+    color: white;
+		text-decoration: none
+}
+
+/* mouse over link */
+a:hover {
+    color: #567fa0;
+		text-decoration: none
+}
+
 select {
 	border: 1px solid #444;
 	padding:.75em 1em .5em 1em;

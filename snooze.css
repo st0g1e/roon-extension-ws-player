@@ -2,8 +2,25 @@ body {
 	background-color: black;
 	color: white;
 	font-family: 'Lato', sans-serif;
-	font-weight: normal;
+	font-weight: bold;
 	font-size: 10px
+}
+
+a:link {
+    color: white;
+		text-decoration: none
+}
+
+/* visited link */
+a:visited {
+    color: white;
+		text-decoration: none
+}
+
+/* mouse over link */
+a:hover {
+    color: #567fa0;
+		text-decoration: none
 }
 
 #header {
