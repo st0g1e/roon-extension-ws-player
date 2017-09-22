@@ -13,7 +13,7 @@ socket.on('initialzones', function(msg){
   document.getElementById("back").innerHTML = "<a href=\"" + referer + "\">back</a>";
   document.getElementById("zone").innerHTML = zone.display_name +
                                               " | <a href=\"timerAdd.html?zone_id=" + zone.zone_id + "\">add</a>\n" +
-                                              "<a href=\"snooze.html?zone_id=" + curZone + "\">" +
+                                              " | <a href=\"snooze.html?zone_id=" + curZone + "\">" +
                                               "<img src=\"img/alarm.png\" width=\"15\" height=\"15\"></a>\n";
 
   show_data();
@@ -156,42 +156,6 @@ function addTimer(form) {
   milliseconds = ( hour * 60 * 60 * 1000 ) + (minute * 60 * 1000) + (second * 1000);
 
   var timerDate = dateNow.getTime() + milliseconds;
-
-  addTimer(zone_id, timerDate, command, 0);
-}
-
-function addByDateTime(form) {
-  var zone_id = form.zoneListByDate.value;
-  var day = form.day.value;
-  var month = form.monthList.value;
-  var year = form.year.value
-  var second = 0;
-  var minute  = form.minute.value;
-  var hour = form.hour.value;
-  var command = form.command.value;
-  var milliseconds = 0;
-  var dateNow = new Date();
-
-  if ( day == null ) {
-    day = "01";
-  } else if ( day < 10 ) {
-    day = "0" + day;
-  }
-
-  if ( minute == null ) {
-    minute = "00";
-  } else if ( minute < 10 ) {
-    minute = "0" + minute;
-  }
-
-  if ( hour == null ) {
-    hour = "00";
-  } else if ( hour < 10 ) {
-    hour = "0" + hour;
-  }
-
-  var timerRun = new Date( months[month] + " " + day + ", " + year + " " + hour + ":" + minute + ":00");
-  var timerDate = timerRun.getTime();
 
   addTimer(zone_id, timerDate, command, 0);
 }

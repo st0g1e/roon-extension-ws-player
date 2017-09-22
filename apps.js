@@ -467,10 +467,10 @@ function nextRun( frequency, hour, minute, isRepeat) {
   var isToday = false;
 
   // check if the timer needs to run today
-  if ( (returnDate.getHours() < hour || ( returnDate.getHours() == hour && returnDate.getMinutes() < minute )) &&
-        ( frequency == "Once" || frequency == "Daily" ||
+  if ( (returnDate.getHours() <= hour && returnDate.getMinutes() < minute )  &&
+        ( frequency == "Once" || frequency == "Daily" || frequency == "Snooze" ||
           ( frequency in days && days[frequency] == returnDate.getDay() ) ||
-          ( frequency == "Weekdays" && returnDate.getDay() < 5 ) ) ) {
+          ( frequency == "Weekdays" && returnDate.getDay() > 0 && returnDate.getDay() < 6 ) ) ) {
 
             returnDate.setHours( hour );
             returnDate.setMinutes( minute );
@@ -484,7 +484,7 @@ function nextRun( frequency, hour, minute, isRepeat) {
       if ( frequency == "Daily") {
         returnDate = nextDate( (returnDate.getDay() + 1) % 7 );
       } else if ( frequency == "Weekdays" ) {
-        if ( returnDate.getDay() > 5 ) {
+        if ( returnDate.getDay() > 4 ) {
           returnDate = nextDate( 1 );
         } else {
           returnDate = nextDate( returnDate.getDay() + 1);

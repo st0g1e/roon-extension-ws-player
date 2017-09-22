@@ -96,7 +96,7 @@ function updateZoneList() {
 
     document.getElementById("search").innerHTML = "<a href=\"browser.html?zone_id=" + curZone + "\">" +
                                                   "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n" +
-                                                  "<a href=\"timers.html?zone_id=" + curZone + "\">" +
+                                                  "&nbsp;&nbsp;<a href=\"timers.html?zone_id=" + curZone + "\">" +
                                                   "<img src=\"img/alarm.png\" width=\"15\" height=\"15\"></a>\n";
 
   }
@@ -156,7 +156,7 @@ function updateSelected() {
   blank_page();
   document.getElementById("search").innerHTML = "<a href=\"browser.html?zone_id=" + curZone + "\">" +
                                                 "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n" +
-                                                "<a href=\"timers.html?zone_id=" + curZone + "\">" +
+                                                "&nbsp;&nbsp;<a href=\"timers.html?zone_id=" + curZone + "\">" +
                                                 "<img src=\"img/alarm.png\" width=\"15\" height=\"15\"></a>\n";
   updateZone();
 }

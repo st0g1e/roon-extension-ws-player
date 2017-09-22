@@ -82,7 +82,7 @@ function snooze(frequency, hour, minute, isRepeat) {
   var curDate = new Date();
   curDate.setMinutes( curDate.getMinutes() + 9 );
   ajax_get(topUrl + '/roonAPI/addTimer?zoneId=' + zone.zone_id +
-                    "&frequency=Once&hour=" + curDate.getHours() +
+                    "&frequency=Snooze&hour=" + curDate.getHours() +
                     "&minute=" + curDate.getMinutes() +
                     "&isRepeat=No", function(data) {
 
