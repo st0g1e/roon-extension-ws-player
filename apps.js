@@ -32,7 +32,7 @@ var timeout;
 var roon = new RoonApi({
    extension_id:        'st0g1e.roon-ws-browser',
    display_name:        "roon-ws-browser",
-   display_version:     "2.0.0",
+   display_version:     "2.0.1",
    publisher:           'bastian ramelan',
    email:		            'st0g1e@yahoo.com',
    log_level:           'none',
@@ -287,6 +287,16 @@ app.get('/roonAPI/listRefresh', function(req, res) {
 
 app.get('/roonAPI/getIcon', function( req, res ) {
   get_image( req.query['image_key'], "fit", 100, 100, "image/jpeg", res);
+});
+
+app.get('/roonAPI/getOriginalImage', function( req, res ) {
+  core.services.RoonApiImage.get_image(req.query['image_key'], function(cb, contentType, body) {
+
+     res.contentType = contentType;
+
+     res.writeHead(200, {'Content-Type': 'image/jpeg' });
+     res.end(body, 'binary');
+  });
 });
 
 // --------------- Helper Functions -----------------------
