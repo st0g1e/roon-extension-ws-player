@@ -32,40 +32,40 @@ var timeout;
 var roon = new RoonApi({
    extension_id:        'st0g1e.roon-ws-browser',
    display_name:        "roon-ws-browser",
-   display_version:     "2.0.1",
+   display_version:     "2.0.2",
    publisher:           'bastian ramelan',
    email:		            'st0g1e@yahoo.com',
    log_level:           'none',
 
    core_paired: function(core_) {
-	core = core_;
+      core = core_;
 
-	transport = core_.services.RoonApiTransport;
+	    transport = core_.services.RoonApiTransport;
 
-	transport.subscribe_zones((response, msg) => {
-            if (response == "Subscribed") {
-                let curZones = msg.zones.reduce((p,e) => (p[e.zone_id] = e) && p, {});
-                zones = curZones;
-            } else if (response == "Changed") {
-                var z;
-                if (msg.zones_removed) msg.zones_removed.forEach(e => delete(zones[e.zone_id]));
-                if (msg.zones_added)   msg.zones_added  .forEach(e => zones[e.zone_id] = e);
-                if (msg.zones_changed) msg.zones_changed.forEach(e => zones[e.zone_id] = e);
-            }
+	    transport.subscribe_zones((response, msg) => {
+        if (response == "Subscribed") {
+          let curZones = msg.zones.reduce((p,e) => (p[e.zone_id] = e) && p, {});
+            zones = curZones;
+          } else if (response == "Changed") {
+              var z;
+              if (msg.zones_removed) msg.zones_removed.forEach(e => delete(zones[e.zone_id]));
+              if (msg.zones_added)   msg.zones_added  .forEach(e => zones[e.zone_id] = e);
+              if (msg.zones_changed) msg.zones_changed.forEach(e => zones[e.zone_id] = e);
+          }
 
-            io.emit("zones", zones);
-        });
+          io.emit("zones", zones);
+      });
+    },
 
-   },
-
-   core_unpaired: function(core_) {
-
-   }
+    core_unpaired: function(core_) {
+    }
 });
 
 var mysettings = roon.load_config("settings") || {
     webport: "3002",
 };
+
+refresh_timer();
 
 function makelayout(settings) {
     var l = {
@@ -201,7 +201,7 @@ app.get('/roonAPI/listZones', function(req, res) {
 });
 
 app.get('/roonAPI/play_pause', function(req, res) {
-    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'playpause');
+    core.services.RoonApiTransport.control(req.query['zoneId'], 'playpause');
 
    res.send({
     "status": "success"
@@ -209,7 +209,7 @@ app.get('/roonAPI/play_pause', function(req, res) {
 });
 
 app.get('/roonAPI/pause', function(req, res) {
-    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'pause');
+    core.services.RoonApiTransport.control(req.query['zoneId'], 'pause');
 
    res.send({
     "status": "success"
@@ -217,7 +217,7 @@ app.get('/roonAPI/pause', function(req, res) {
 });
 
 app.get('/roonAPI/play', function(req, res) {
-    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'play');
+    core.services.RoonApiTransport.control(req.query['zoneId'], 'play');
 
    res.send({
     "status": "success"
@@ -225,7 +225,7 @@ app.get('/roonAPI/play', function(req, res) {
 });
 
 app.get('/roonAPI/previous', function(req, res) {
-    core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'previous');
+    core.services.RoonApiTransport.control(req.query['zoneId'], 'previous');
 
     res.send({
        "zone": req.headers.referer
@@ -233,7 +233,7 @@ app.get('/roonAPI/previous', function(req, res) {
 });
 
 app.get('/roonAPI/next', function(req, res) {
-  core.services.RoonApiTransport.control(zones[req.query['zoneId']], 'next');
+  core.services.RoonApiTransport.control(req.query['zoneId'], 'next');
 
   res.send({
     "zone": core.services.RoonApiTransport.zone_by_zone_id(req.query['zoneId'])

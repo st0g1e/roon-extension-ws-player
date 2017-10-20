@@ -1,7 +1,7 @@
 {
   "name"                        : "roon-extension-ws-player",
   "description"                 : "roon player using websocket",
-  "version"                     : "2.0.1",
+  "version"                     : "2.0.2",
   "main"                        : "apps.js",
   "private"                     : true,
   "dependencies": {
