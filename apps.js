@@ -32,7 +32,7 @@ var timeout;
 var roon = new RoonApi({
    extension_id:        'st0g1e.roon-ws-browser',
    display_name:        "roon-ws-browser",
-   display_version:     "2.0.2",
+   display_version:     "2.0.3",
    publisher:           'bastian ramelan',
    email:		            'st0g1e@yahoo.com',
    log_level:           'none',
@@ -198,6 +198,25 @@ app.get('/roonAPI/listZones', function(req, res) {
   res.send({
     "zones": zones
   })
+});
+
+app.get('/roonAPI/transfer_zone', function(req, res) {
+    core.services.RoonApiTransport.transfer_zone(req.query['fromZoneId'], req.query['toZoneId']);
+
+   res.send({
+    "status": "success"
+  })
+});
+
+
+app.get('/roonAPI/listOutputs', function(req, res){
+    core.services.RoonApiTransport.get_outputs((iserror, body) => {
+        if (!iserror) {
+            res.send({
+                "outputs": body.outputs
+            })
+        }
+    })
 });
 
 app.get('/roonAPI/play_pause', function(req, res) {
