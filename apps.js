@@ -338,6 +338,7 @@ function refresh_browse(zone_id, opts, page, listPerPage, cb) {
                 hierarchy:          "browse",
                 offset:             page,
                 set_display_offset: listPerPage,
+		multi_session_key:  opts.multi_session_key,
             }, (err, r) => {
                 items = r.items;
 
