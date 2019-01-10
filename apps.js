@@ -260,7 +260,7 @@ app.get('/roonAPI/next', function(req, res) {
 });
 
 app.get('/roonAPI/listSearch', function(req, res) {
-   refresh_browse( req.query['zoneId'], { item_key: req.query['item_key'], input: req.query['toSearch'] }, 0, 100, function(myList) {
+   refresh_browse( req.query['zoneId'], { item_key: req.query['item_key'], input: req.query['toSearch'], multi_session_key: req.query['multiSessionKey'] }, 0, 100, function(myList) {
     res.send({
       "list": myList
     })
@@ -268,7 +268,7 @@ app.get('/roonAPI/listSearch', function(req, res) {
 });
 
 app.get('/roonAPI/listByItemKey', function(req, res) {
-   refresh_browse( req.query['zoneId'], { item_key: req.query['item_key'] }, 0, 100, function(myList) {
+   refresh_browse( req.query['zoneId'], { item_key: req.query['item_key'], multi_session_key: req.query['multiSessionKey'] }, 0, 100, function(myList) {
 
    res.send({
      "list": myList
@@ -277,7 +277,7 @@ app.get('/roonAPI/listByItemKey', function(req, res) {
 });
 
 app.get('/roonAPI/goUp', function(req, res) {
-   refresh_browse( req.query['zoneId'], { pop_levels: 1 }, 1, 100,  function(myList) {
+   refresh_browse( req.query['zoneId'], { pop_levels: 1, multi_session_key: req.query['multiSessionKey'] }, 1, 100,  function(myList) {
 
     res.send({
       "list": myList
@@ -287,7 +287,7 @@ app.get('/roonAPI/goUp', function(req, res) {
 });
 
 app.get('/roonAPI/goHome', function(req, res) {
-   refresh_browse( req.query['zoneId'], { pop_all: true }, 1, 100, function(myList) {
+   refresh_browse( req.query['zoneId'], { pop_all: true, multi_session_key: req.query['multiSessionKey'] }, 1, 100, function(myList) {
 
    res.send({
      "list": myList
@@ -296,7 +296,7 @@ app.get('/roonAPI/goHome', function(req, res) {
 });
 
 app.get('/roonAPI/listRefresh', function(req, res) {
-   refresh_browse( req.query['zoneId'], { refresh_list: true }, 0, 0, function(myList) {
+   refresh_browse( req.query['zoneId'], { refresh_list: true, multi_session_key: req.query['multiSessionKey'] }, 0, 0, function(myList) {
 
    res.send({
      "list": myList
