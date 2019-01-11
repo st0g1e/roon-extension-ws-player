@@ -2,18 +2,8 @@ var topUrl = window.location.protocol + "//" + window.location.hostname + ":" + 
 var curZone = window.location.search.split('=')[1];
 
 var referer = "player.html?zone_id=" + curZone;
-
-var socket = io();
+var multiSessionKey = (+new Date).toString(36).slice(-5);
 var zone;
-
-socket.on('initialzones', function(msg){
-  zone = msg[curZone];
-  var multiSessionKey = (+new Date).toString(36).slice(-5);
-
-  document.getElementById("back").innerHTML = "<a href=\"" + referer + "\">back</a>";
-  document.getElementById("zone").innerHTML = zone.display_name;
-  goHome(multiSessionKey);
-});
 
 function ajax_get(url, callback) {
     xmlhttp = new XMLHttpRequest();
@@ -30,6 +20,16 @@ function ajax_get(url, callback) {
 
     xmlhttp.open("GET", url, true);
     xmlhttp.send();
+}
+
+function onload() {
+  ajax_get(topUrl + '/roonAPI/getZone?zoneId=' + curZone, function(data) {
+    zone = data;
+
+    document.getElementById("back").innerHTML = "<a href=\"" + referer + "\">back</a>";
+    document.getElementById("zone").innerHTML = zone.zone.display_name;
+    goHome(multiSessionKey);
+  });
 }
 
 function goHome(multiSessionKey) {
@@ -130,7 +130,6 @@ function show_gallery( data, zone_id, level, multiSessionKey) {
 }
 
 function each_gallery(data, zone_id, levelToGo, multiSessionKey) {
-console.log("each_gallery:" + multiSessionKey);
   html = "";
 
   html += "<div class=\"gallery\">\n";
@@ -150,8 +149,7 @@ console.log("each_gallery:" + multiSessionKey);
   return html;
 }
 
-function each_album(data, zone_id, multiSessionKey) {
-console.log("each_album:" + multiSessionKey);
+function each_album(data, zone_id, level, multiSessionKey) {
   html = "";
 
   html += "<div class=\"gallery\">\n";

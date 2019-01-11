@@ -200,6 +200,12 @@ app.get('/roonAPI/listZones', function(req, res) {
   })
 });
 
+app.get('/roonAPI/getZone', function(req, res) {
+   res.send({
+    "zone": zones[req.query['zoneId']]
+  })
+});
+
 app.get('/roonAPI/transfer_zone', function(req, res) {
     core.services.RoonApiTransport.transfer_zone(req.query['fromZoneId'], req.query['toZoneId']);
 
@@ -337,8 +343,8 @@ function refresh_browse(zone_id, opts, page, listPerPage, cb) {
             core.services.RoonApiBrowse.load({
                 hierarchy:          "browse",
                 offset:             page,
-                set_display_offset: listPerPage,
-		multi_session_key:  opts.multi_session_key,
+                count:              listPerPage,
+		            multi_session_key:  opts.multi_session_key,
             }, (err, r) => {
                 items = r.items;
 
