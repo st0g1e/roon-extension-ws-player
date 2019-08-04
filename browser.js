@@ -14,6 +14,7 @@ function ajax_get(url, callback) {
             } catch(err) {
                 return;
             }
+
             callback(data);
         }
     };
@@ -106,7 +107,7 @@ function show_gallery( data, zone_id, level, multiSessionKey) {
   }
 
   if ( level == 4 ) {
-    level = 3;
+//    level = 3;
   }
 
   for ( var i in data['list'] ) {
