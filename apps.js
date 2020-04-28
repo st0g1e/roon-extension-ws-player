@@ -62,7 +62,8 @@ var roon = new RoonApi({
 });
 
 var mysettings = roon.load_config("settings") || {
-    webport: "3002",
+    defaultzone:	null,
+    webport:	"3002",
 };
 
 refresh_timer();
@@ -82,10 +83,9 @@ function makelayout(settings) {
     });
 
     l.layout.push({
-        type:      "string",
-        title:     "Default Zone",
-        maxlength: 256,
-        setting:   "defaultZone",
+		type:    "zone",
+		title:   "Default Zone",
+		setting: "defaultZone",
     });
 
     return l;
