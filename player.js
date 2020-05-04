@@ -21,14 +21,19 @@ socket.on('initialzones', function(msg){
 
 socket.on('zones', function(msg){
    if ( inRangeSlider == false ) {
-      zones = msg;
-
-     if ( zones == null || zones.length != msg.length ) {
-       updateZoneList();
-     }
-
+     zones = msg;
      updateZone();
    }
+});
+
+socket.on('zonesList', function(msg){
+  zones = msg;
+
+  if ( zones != null ) {
+    updateSelected();
+  }
+
+  updateZone();
 });
 
 socket.on('alarmWentOff', function(msg){
@@ -78,12 +83,12 @@ function updateZoneList() {
     html += "<ul>";
 
     for (var i in zones) {
-      if ( isFirst == true && curZone == "" ) {
+      if ( isFirst == true && !curZone ) {
         html += "<option value=" + zones[i].zone_id + " selected>" + zones[i].display_name + "</option>\n";
         curZone = zones[i].zone_id;
         isFirst = false;
       } else {
-        if ( zones[curZone].display_name == zones[i].display_name ) {
+        if ( zones[curZone] && zones[curZone].display_name == zones[i].display_name ) {
           html += "<option value=" + zones[i].zone_id + " selected>" + zones[i].display_name + "</option>\n";
         } else {
           html += "<option value=" + zones[i].zone_id + ">" + zones[i].display_name + "</option>\n";
@@ -93,12 +98,10 @@ function updateZoneList() {
 
     html += "</ul>";
     document.getElementById("zoneList").innerHTML = html;
-
     document.getElementById("search").innerHTML = "<a href=\"browser.html?zone_id=" + curZone + "\">" +
                                                   "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n" +
                                                   "&nbsp;&nbsp;<a href=\"timers.html?zone_id=" + curZone + "\">" +
                                                   "<img src=\"img/alarm.png\" width=\"15\" height=\"15\"></a>\n";
-
   }
 }
 
@@ -158,6 +161,8 @@ function updateSelected() {
                                                 "<img src=\"img/search.png\" width=\"15\" height=\"15\"></a>\n" +
                                                 "&nbsp;&nbsp;<a href=\"timers.html?zone_id=" + curZone + "\">" +
                                                 "<img src=\"img/alarm.png\" width=\"15\" height=\"15\"></a>\n";
+
+  updateZoneList();
   updateZone();
 }
 
@@ -312,4 +317,27 @@ function popup(windowname) {
 	window_pos(windowname);
 	toggle('blanket');
 	toggle(windowname);
+}
+
+function getZoneSimple(orgZones) {
+  var jsonStr;
+  var isFirst = 1;
+
+  jsonStr ="{";
+
+  for (var i in orgZones) {
+    if ( isFirst == 0 ) {
+      jsonStr += ",";
+    } else {
+      isFirst = 0;
+    }
+
+    jsonStr += "\"" + orgZones[i].zone_id + "\": {";
+    jsonStr += "\"zone_id\":\"" + orgZones[i].zone_id + "\", ";
+    jsonStr += "\"display_name\":\"" + orgZones[i].display_name + "\"}";
+  }
+
+  jsonStr += "}";
+
+  return JSON.parse(jsonStr);
 }

@@ -32,7 +32,7 @@ var timeout;
 var roon = new RoonApi({
    extension_id:        'st0g1e.roon-ws-browser',
    display_name:        "roon-ws-browser",
-   display_version:     "2.0.3",
+   display_version:     "2.0.4",
    publisher:           'bastian ramelan',
    email:		            'st0g1e@yahoo.com',
    log_level:           'none',
@@ -47,13 +47,22 @@ var roon = new RoonApi({
           let curZones = msg.zones.reduce((p,e) => (p[e.zone_id] = e) && p, {});
             zones = curZones;
           } else if (response == "Changed") {
-              var z;
-              if (msg.zones_removed) msg.zones_removed.forEach(e => delete(zones[e.zone_id]));
-              if (msg.zones_added)   msg.zones_added  .forEach(e => zones[e.zone_id] = e);
-              if (msg.zones_changed) msg.zones_changed.forEach(e => zones[e.zone_id] = e);
-          }
+              if (msg.zones_removed) {
+                msg.zones_removed.forEach(e => delete(zones[e]));
+                io.emit("zonesList", zones);
+              }
 
-          io.emit("zones", zones);
+              if (msg.zones_added) {
+                msg.zones_added  .forEach(e => zones[e.zone_id] = e);
+                io.emit("zonesList", zones);
+              }
+
+              if (msg.zones_changed) {
+                msg.zones_changed.forEach(e => zones[e.zone_id] = e);
+              }
+
+              io.emit("zones", zones);
+          }
       });
     },
 
@@ -585,4 +594,27 @@ function playZone(zoneId) {
 function pauseZone(zoneId) {
   refresh_timer();
   core.services.RoonApiTransport.control(zoneId, 'pause');
+}
+
+function getZoneSimple(orgZones) {
+  var jsonStr;
+  var isFirst = 1;
+
+  jsonStr ="{";
+
+  for (var i in orgZones) {
+    if ( isFirst == 0 ) {
+      jsonStr += ",";
+    } else {
+      isFirst = 0;
+    }
+
+    jsonStr += "\"" + orgZones[i].zone_id + "\": {";
+    jsonStr += "\"zone_id\":\"" + orgZones[i].zone_id + "\", ";
+    jsonStr += "\"display_name\":\"" + orgZones[i].display_name + "\"}";
+  }
+
+  jsonStr += "}";
+
+  return JSON.parse(jsonStr);
 }
