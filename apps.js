@@ -191,7 +191,9 @@ io.on('connection', function(socket){
 
   socket.on('getImage', function(msg){
      core.services.RoonApiImage.get_image(msg, {"scale": "fit", "width": 300, "height": 200, "format": "image/jpeg"}, function(cb, contentType, body) {
-        socket.emit('image', { image: true, buffer: body.toString('base64') });
+       if ( body ) {
+         socket.emit('image', { image: true, buffer: body.toString('base64') });
+       }
      });
   });
 
